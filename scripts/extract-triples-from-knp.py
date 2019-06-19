@@ -79,6 +79,5 @@ for line in iter(sys.stdin.readline, ""):
                 governor_str = get_head_word_from_governor(parent)
                 if not governor_str:
                     continue
-                print("({})".format(", ".join((modifier_str, dpnd_type, governor_str))))
-                # print("(", modifier_str, ", ", dpnd_type, ", ", governor_str, ")")
+                print("\t".join((modifier_str, dpnd_type, governor_str)))
         data = ""
