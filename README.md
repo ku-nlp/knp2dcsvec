@@ -14,3 +14,5 @@ A tool to convert a KNP output to triples for DCSVec.
 % jumanpp < samples/sample1.txt | knp -tab > samples/sample1.knp
 % python3 scripts/extract-triples-from-knp.py < samples/sample1.knp > samples/sample1.tsv
 ```
+
+If you want to extract compound nouns as modifiers, add "-c" option to extract-triples-from-knp.py.

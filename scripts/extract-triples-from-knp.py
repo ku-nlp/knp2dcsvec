@@ -3,11 +3,18 @@
 from pyknp import KNP
 import sys
 import re
+import argparse
 
 knp = KNP(jumanpp=True)
 
 # get the head word from a given bnst (general method)
-def get_head_word_from_bnst(bnst):
+def get_head_word_from_bnst(bnst, compound_flag=False):
+    # if we want to extract compund nouns
+    if compound_flag:
+        m = re.search("<正規化代表表記:([^>]+)", bnst.fstring)
+        if m:
+            return m.group(1);
+
     m = re.search("<主辞’代表表記:([^>]+)", bnst.fstring)
     if m:
         return m.group(1);
@@ -51,6 +58,12 @@ def get_dpnd_type_for_compound_case(bnst):
     else:
         return "複合辞連用"
 
+
+parser = argparse.ArgumentParser(description='Extract triples for DCS2Vec from KNP parses')
+parser.add_argument('--compound', '-c', action='store_true',
+                    help='extract compound nouns as modifiers')
+args = parser.parse_args()
+
 data = ""
 for line in iter(sys.stdin.readline, ""):
     data += line
@@ -60,7 +73,7 @@ for line in iter(sys.stdin.readline, ""):
             # skip 複合辞 as a modifier
             if "複合辞" in bnst.fstring:
                 continue
-            modifier_str = get_head_word_from_bnst(bnst)
+            modifier_str = get_head_word_from_bnst(bnst, args.compound)
             if not modifier_str:
                 continue
             parent = bnst.parent
