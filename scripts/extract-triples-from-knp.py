@@ -40,10 +40,15 @@ def get_head_word_from_governor(bnst):
     return get_head_word_from_bnst(bnst)
 
 # get the dependency type from a given bnst
-def get_dpnd_type(bnst):
+def get_dpnd_type(bnst, parent):
     m = re.search("<係:([^>]+)", bnst.fstring)
     if m:
-        return m.group(1)
+        dpnd_type = m.group(1)
+        # distinguish ga in passive voice from ga in active voice
+        if dpnd_type == 'ガ格' and parent and '<〜られる>' in parent.fstring:
+            return 'ガ格受動'
+        else:
+            return dpnd_type
     else:
         return None
 
@@ -85,7 +90,7 @@ for line in iter(sys.stdin.readline, ""):
                     if not parent:
                         continue
                 else:
-                    dpnd_type = get_dpnd_type(bnst)
+                    dpnd_type = get_dpnd_type(bnst, parent)
                     # NONE is exceptional
                     if dpnd_type == "NONE":
                         continue
